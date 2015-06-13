@@ -1,0 +1,38 @@
+{
+  "name": "timetraveller-mongodb",
+  "version": "1.0.0",
+  "description": "Store and access GeoJSON LineStrings with time components in MongoDB",
+  "main": "index.js",
+  "bin": "./bin/timetraveller-mongodb",
+  "scripts": {
+    "standard": "standard && standard ./bin/*",
+    "test": "npm run standard"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/fnogatz/timetraveller-mongodb.git"
+  },
+  "keywords": [
+    "timetraveller",
+    "timetraveller-connector",
+    "mongodb",
+    "GeoJSON",
+    "linestring"
+  ],
+  "author": "Falco Nogatz <fnogatz@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fnogatz/timetraveller-mongodb/issues"
+  },
+  "homepage": "https://github.com/fnogatz/timetraveller-mongodb",
+  "dependencies": {
+    "binary-split": "^0.1.2",
+    "char-spinner": "^1.0.1",
+    "commander": "^2.8.1",
+    "console-stamp": "^0.1.6",
+    "mongodb": "^2.0.33"
+  },
+  "devDependencies": {
+    "standard": "^4.1.0"
+  }
+}

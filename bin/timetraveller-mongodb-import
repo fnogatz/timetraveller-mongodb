@@ -1,0 +1,88 @@
+#!/usr/bin/env node
+
+require('console-stamp')(console, 'HH:MM:ss.l')
+
+var program = require('commander')
+var split = require('binary-split')
+var spinner = require('char-spinner')
+var Model = require('../index')
+
+spinner()
+
+program
+  .usage('[options] <database>')
+  .option('-d, --prefix <name>', 'Prefix for the database name (default: "timetraveller_")')
+  .option('-p, --port <int>', 'MongoDB port (default: 27017)', parseInt)
+  .option('-h, --host <name>', 'MongoDB host (default: localhost)')
+  .parse(process.argv)
+
+program.database = program.args[0]
+if (!program.database) {
+  throw new Error('Database name must be specified')
+}
+program.prefix = program.prefix || 'timetraveller_'
+
+var options = {
+  db: {
+    database: program.prefix + program.database,
+    host: program.host,
+    port: program.port
+  }
+}
+
+console.log('Start import of GeoJSON')
+
+var model = new Model(options)
+var running = 0
+var inputFinished = false
+var datasets = 0
+
+var splitter = split()
+splitter.on('data', function (data) {
+  running++
+
+  var geojson = JSON.parse(data)
+
+  var options = {}
+
+  model.importGeoJSON(geojson, options, function (err) {
+    if (err) {
+      throw err
+    }
+
+    datasets++
+    running--
+
+    if (datasets % 100 === 0) {
+      console.log(datasets + ' datasets imported.')
+    }
+
+    checkForFinish()
+  })
+})
+
+splitter.on('error', function (err) {
+  throw err
+})
+splitter.on('end', function () {
+  inputFinished = true
+  checkForFinish()
+})
+
+splitter.pause()
+process.stdin.pipe(splitter)
+
+model.connect(function (err) {
+  if (err) {
+    throw err
+  }
+
+  splitter.resume()
+})
+
+function checkForFinish () {
+  if (running === 0 && inputFinished === true) {
+    console.log('Finished import of ' + datasets + ' datasets.')
+    process.exit(0)
+  }
+}

@@ -1,0 +1,78 @@
+#!/usr/bin/env node
+
+require('console-stamp')(console, 'HH:MM:ss.l')
+
+var program = require('commander')
+var spinner = require('char-spinner')
+var Model = require('../index')
+
+program
+  .usage('[options] <database>')
+  .option('-d, --prefix <name>', 'Prefix for the database name (default: "timetraveller_")')
+  .option('-p, --port <int>', 'MongoDB port (default: 27017)', parseInt)
+  .option('-h, --host <name>', 'MongoDB host (default: localhost)')
+  .option('--lat <from>..<to>', 'Range of latitude', range)
+  .option('--lon <from>..<to>', 'Range of longitude', range)
+  .option('--date <from>..<to>', 'Time range', dateRange)
+  .parse(process.argv)
+
+program.database = program.args[0]
+if (!program.database) {
+  throw new Error('Database name must be specified')
+}
+program.prefix = program.prefix || 'timetraveller_'
+
+var options = {
+  db: {
+    database: program.prefix + program.database,
+    host: program.host,
+    port: program.port
+  }
+}
+
+spinner()
+
+var query = {
+  bounds: {
+    west: program.lat[0],
+    east: program.lat[1],
+    south: program.lon[0],
+    north: program.lon[1]
+  },
+  time: {
+    start: program.date[0],
+    end: program.date[1]
+  }
+}
+
+var running = 0
+var model = new Model(options)
+
+model.findTrajectories(query, function (geojson) {
+  running++
+  console.log(geojson)
+  running--
+  checkForFinish()
+}, function (err) {
+  if (err) {
+    throw err
+  }
+
+  checkForFinish()
+})
+
+function range (val) {
+  return val.split('..').map(Number)
+}
+
+function dateRange (val) {
+  return val.split('..').map(function (s) {
+    return new Date(s)
+  })
+}
+
+function checkForFinish () {
+  if (running === 0) {
+    process.exit(0)
+  }
+}
