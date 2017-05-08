@@ -26,13 +26,13 @@
   },
   "homepage": "https://github.com/fnogatz/timetraveller-mongodb",
   "dependencies": {
-    "binary-split": "^0.1.2",
+    "binary-split": "^1.0.3",
     "char-spinner": "^1.0.1",
     "commander": "^2.8.1",
-    "console-stamp": "^0.1.6",
+    "console-stamp": "^0.2.5",
     "mongodb": "^2.0.33"
   },
   "devDependencies": {
-    "standard": "^4.1.0"
+    "standard": "^10.0.2"
   }
 }
