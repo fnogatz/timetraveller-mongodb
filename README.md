@@ -1,5 +1,7 @@
 # timetraveller-mongodb
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/fnogatz/timetraveller-mongodb.svg)](https://greenkeeper.io/)
+
 Store and access GeoJSON LineStrings with time components in MongoDB. Have a look at [zeitpunkt](https://github.com/fnogatz/zeitpunkt#geojson-format) to get an example of the consumed GeoJSON data.
 
 Although being primarily developed as database connector for [timetraveller](https://www.npmjs.org/package/timetraveller), this module can be used on its own to store and query GeoJSON LineStrings with time components, as they are used in [several other tools](https://github.com/fnogatz/zeitpunkt#compatible-tools).
